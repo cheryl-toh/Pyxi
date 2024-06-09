@@ -1,0 +1,9 @@
+SpeechRecognition
+pyaudio
+geopy
+pywinauto
+pyowm
+pytz
+pyyaml
+ics
+dateparser
