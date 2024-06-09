@@ -4,13 +4,13 @@ import pytz
 from Robot.SpeechRecognition import Pyxi
 from Robot.Todo import Todo, Item
 from Robot.Weather import OpenWeatherApi
-from Robot.Calendar import Calendar_skill
+from Robot.Calendar import Calender_skill
 import dateparser
 
 robot = Pyxi()
 weather_api = OpenWeatherApi()
 todo = Todo()
-calendar = Calendar_skill()
+calendar = Calender_skill()
 calendar.load()
 command = ""
 
@@ -65,11 +65,8 @@ def add_event()->bool:
         if parsed_date is None:
             print("Sorry, I couldn't understand the date and time you provided.")
             return False
-        # Convert parsed_date to Kuala Lumpur time zone
-        tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
-        parsed_date_kl = parsed_date.astimezone(tz_kl)
-
-        event_isodate = parsed_date_kl.strftime("%Y-%m-%d %H:%M:%S")
+        localized_date = pytz.timezone('Asia/Kuala_Lumpur').localize(parsed_date)
+        event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
         print("on: ", event_isodate)
         print("What is the event description?")
         event_description = robot.listen()

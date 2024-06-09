@@ -9,6 +9,7 @@ import pytz
 from dataclasses import dataclass
 
 calendar_filename = 'docs\\myfile.ics'
+temp_calendar_filename = 'docs\\temp.ics'
 calendar_datafile = 'Robot\\myfile.yaml'
 
 class Calendar_skill():
@@ -31,11 +32,6 @@ class Calendar_skill():
         e.name = name
         # Parse the provided begin string to datetime
         begin_datetime = datetime.strptime(begin, '%Y-%m-%d %H:%M:%S')
-
-        # # Localize the event start time to Kuala Lumpur timezone
-        # tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
-        # begin_kl = tz_kl.localize(begin_datetime)
-        print("localize", begin_datetime)
         e.begin = begin_datetime
         e.description = description
         
@@ -73,18 +69,17 @@ class Calendar_skill():
     def save(self):
         print("saving calendar")
         # Save the Calendar ICS file
-        with open("calendrier.ics",'w') as my_file:
-            my_file.writelines(self.calendar)
-        # Save the YAML Data file
-        calendrier = open("calendrier.ics", "rt")
-        cal = open(calendar_filename, "wt")
-        #for each line in the input file
-        for line in calendrier:
-            #read replace the string and write to output file
-            cal.write(line.replace('Z', ''))
-        #close input and output files
-        calendrier.close()
-        cal.close()
+        with open(temp_calendar_filename, 'w') as temp_file:
+            temp_file.writelines(self.calendar)
+
+        with open(temp_calendar_filename, 'r') as temp_file:
+            with open(calendar_filename, 'w') as my_file:
+                for line in temp_file:
+                    # read replace the string and write to output file
+                    my_file.write(line.replace('Z', ''))
+
+        # Delete the temporary calendar file after copying
+        os.remove(temp_calendar_filename)
         print("saved calendar")
 
         # first check that there are some entries in the dictionary, otherwise remove the file
@@ -130,9 +125,7 @@ class Calendar_skill():
             return []
         else:
             event_list = []
-            # have to fix the localisation - thats the +00 timezone bit on the date
-            # otherwise it complains of non-naive date being compared with naive date
-            now = pytz.utc.localize(datetime.now())
+            now = pytz.timezone('Asia/Kuala_Lumpur').localize(datetime.now())
             if period == "this week":
                 nextperiod = now+relativedelta(weeks=+1)
             if period == "this month":
@@ -145,14 +138,17 @@ class Calendar_skill():
                     event_list.append(event)
             return event_list
 
-calendar = Calendar_skill()
-parsed_date = dateparser.parse("next week at 6 30 pm", settings={'PREFER_DATES_FROM': 'future'})
-tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
-parsed_date = parsed_date.replace(hour=18, minute=30)
-localized_date = tz_kl.localize(parsed_date)
+# calendar = Calendar_skill()
+# parsed_date = dateparser.parse("next week at 6 30 pm", settings={'PREFER_DATES_FROM': 'future'})
+# tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
+# parsed_date = parsed_date.replace(hour=18, minute=30)
+# localized_date = tz_kl.localize(parsed_date)
 
-event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
-print("on: ", event_isodate)
-calendar.add_event(event_isodate, "event 1", "description 1")
-calendar.save()
-calendar.list_events('all')
+# event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
+# print("on: ", event_isodate)
+# calendar.add_event(event_isodate, "event 1", "description 1")
+# calendar.save()
+# events = calendar.list_events(period='all')
+
+# for e in events:
+#     print(e.name, e.begin.datetime)
