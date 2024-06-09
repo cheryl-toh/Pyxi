@@ -1,5 +1,5 @@
-# Subscribe 
-To subscribe to the iCal file click here:
+# Files 
+Access ICal file here:
 [myfile.ics](myfile.ics)
 
 ---

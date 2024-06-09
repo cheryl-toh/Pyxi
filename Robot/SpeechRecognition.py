@@ -27,9 +27,28 @@ class Pyxi():
         self.engine.say(sentence)
         self.engine.runAndWait()
 
-    def listen(self):
+    def wake_word(self):
         try: 
-            print("Say something")
+            print("Listening for wake word...")
+            while True:
+                with self.m as source:
+                    self.r.adjust_for_ambient_noise(source, duration=0.2)
+                    audio = self.r.listen(source)
+                    text = self.r.recognize_google(audio)
+                    if text.lower() in ["pyxi", "pixie"]:
+                        print("Wake word detected.")
+                        return True
+        except sr.RequestError as e:
+            print("Could not request results; {0}".format(e))
+            return False
+                
+        except sr.UnknownValueError:
+            print("Unknown error occurred")
+            return None
+
+    def get_command(self):
+        try:
+            print("Say your command")
             with self.m as source:
                 self.r.adjust_for_ambient_noise(source, duration=0.2)
                 
@@ -48,7 +67,6 @@ class Pyxi():
         except sr.UnknownValueError:
             print("unknown error occurred")
             return None
-
         
 
     

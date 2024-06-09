@@ -1,16 +1,16 @@
 import datetime
 
 import pytz
-from Robot.SpeechRecognition import Pyxi
-from Robot.Todo import Todo, Item
-from Robot.Weather import OpenWeatherApi
-from Robot.Calendar import Calender_skill
+from SpeechRecognition import Pyxi
+from Todo import Todo, Item
+from Weather import OpenWeatherApi
+from Calendar import Calendar_skill
 import dateparser
 
 robot = Pyxi()
 weather_api = OpenWeatherApi()
 todo = Todo()
-calendar = Calender_skill()
+calendar = Calendar_skill()
 calendar.load()
 command = ""
 
@@ -128,56 +128,61 @@ def list_events(period):
 while True and command != "goodbye":
 
     try:
-        command = robot.listen()
-        command = command.lower()
-        print("command was: ", command)
+        wake_word_detected = robot.wake_word()
+
+        if wake_word_detected:
+            command = robot.get_command()
+            command = command.lower()
+            print("command was: ", command)
+        
+        if command == "pyxi" or command == "pixie":
+            print("HUH")
+            command = ""
+
+        elif command in ["add to-do", "add to do", "add item"]:
+            add_todo()
+            command = ""
+
+        elif command in ["list to-do", "list to do", "lease to do"]:
+            list_todo()
+            command = ""
+        
+        elif command in ["romove to-do", "remove to do"]:
+            remove_todo()
+            command = ""
+
+        elif command in ["empty to-do", "empty to do"]:
+            empty_todo()
+            command = ""
+
+        elif command == "what's the weather":
+            weather_data = weather_api.weather
+            if weather_data:
+                print(weather_data)
+            else:
+                print("couldn't fetch weather")
+        
+        elif command == "what's the temperature":
+            temp_data = weather_api.temp
+            print(temp_data)
+
+        elif command in ['add event','add to calendar','new event','add a new event']:
+            add_event()
+
+        elif command in ['delete event','remove event','cancel event']:
+            remove_event()
+
+        elif command in ['list events',"what's on this month","what's coming up this month"]:
+            list_events(period='this month')
+        
+        elif command in ["what's on this week","what's coming up this week"]:
+            list_events(period='this week')
+
+        elif command in ["what's happening", 'list all events']:
+            list_events(period='all')
     except:
         print("oops there was an error")
         command = ""
 
-    if command == "pyxi" or command == "pixie":
-        print("HUH")
-        command = ""
-
-    elif command in ["add to-do", "add to do", "add item"]:
-        add_todo()
-        command = ""
-
-    elif command in ["list to-do", "list to do", "lease to do"]:
-        list_todo()
-        command = ""
     
-    elif command in ["romove to-do", "remove to do"]:
-        remove_todo()
-        command = ""
-
-    elif command in ["empty to-do", "empty to do"]:
-        empty_todo()
-        command = ""
-
-    elif command == "what's the weather":
-        weather_data = weather_api.weather
-        if weather_data:
-            print(weather_data)
-        else:
-            print("couldn't fetch weather")
-    
-    elif command == "what's the temperature":
-        temp_data = weather_api.temp
-        print(temp_data)
-
-    elif command in ['add event','add to calendar','new event','add a new event']:
-        add_event()
-
-    elif command in ['delete event','remove event','cancel event']:
-        remove_event()
-
-    elif command in ['list events',"what's on this month","what's coming up this month"]:
-        list_events(period='this month')
-    
-    elif command in ["what's on this week","what's coming up this week"]:
-        list_events(period='this week')
-
-    elif command in ["what's happening", 'list all events']:
-        list_events(period='all')
         
