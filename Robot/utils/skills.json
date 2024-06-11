@@ -1,0 +1,18 @@
+{
+    "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock"],
+    "skills": [
+        
+        {
+            "name": "calendar_handler"
+        },
+        {
+            "name": "todo_handler"
+        },
+        {
+            "name": "weather_handler"
+        },
+        {
+            "name": "clock_handler"
+        }
+    ]
+}

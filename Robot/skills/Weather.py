@@ -3,10 +3,13 @@ from geopy import Nominatim
 from geopy.exc import GeocoderServiceError, GeocoderTimedOut
 from datetime import datetime
 import requests
+from utils import factory
+from utils.SpeechRecognition import Pyxi
+from dataclasses import dataclass
 
 
 # Class for open weather api related functions
-class OpenWeatherApi:
+class Weather_Skill:
 
     # default location
     __location = "Kuala Lumpur, MY"
@@ -55,8 +58,6 @@ class OpenWeatherApi:
                 print("No City Found")
             else:
                 weather = weather_data.json()['weather'][0]['main']
-
-                print(f"The weather in {self.city} is: {weather}")
             return weather
         except Exception as e:
             print(f"Error retrieving weather data: {e}")
@@ -81,6 +82,34 @@ class OpenWeatherApi:
             print(f"Error retrieving weather data: {e}")
             return None
 
+@dataclass
+class Weather_Handler():
+    name = "weather_handler"
+    weather_skill = Weather_Skill()
+
+    def commands(self, command:str):
+        return ["what's the weather", "tell me the weather", "weather",
+                "what's today's temperature", "today's temperature", "what's the temperature", "temperature"]
+    
+    def get_weather(self):
+        weather = self.weather_skill.weather
+        print(weather)
+    
+    def get_temp(self):
+        temp = self.weather_skill.temp
+        print(temp)
+
+    def handle_command(self, command:str, robot:Pyxi):
+        
+        if command in ["what's the weather", "tell me the weather", "weather"]:
+            self.get_weather()
+        if command in ["what's today's temperature", "today's temperature", "what's the temperature", "temperature"]:
+            print("here")
+            self.get_temp()
+
+def initialize():
+    factory.register('weather_handler', Weather_Handler)
+    
 # myweather = Weather()
 # weather_data = myweather.weather
 
