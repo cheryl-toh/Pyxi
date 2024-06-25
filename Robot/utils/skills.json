@@ -1,5 +1,5 @@
 {
-    "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock"],
+    "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock", "skills.Automate"],
     "skills": [
         
         {
@@ -13,6 +13,9 @@
         },
         {
             "name": "clock_handler"
+        },
+        {
+            "name": "automate_handler"
         }
     ]
 }

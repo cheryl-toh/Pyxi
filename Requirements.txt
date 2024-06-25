@@ -8,3 +8,7 @@ pyyaml
 ics
 dateparser
 simple_countdowntimer
+pillow
+ST7735
+Adafruit_GPIO
+git

@@ -7,7 +7,7 @@ class Pyxi():
 
     def __init__(self, name=None):
         self.r = sr.Recognizer()
-        self.m = sr.Microphone()
+        self.m = sr.Microphone(sample_rate=48000)
 
         if name is not None:
             self.name = name
@@ -35,7 +35,8 @@ class Pyxi():
                     self.r.adjust_for_ambient_noise(source, duration=0.2)
                     audio = self.r.listen(source)
                     text = self.r.recognize_google(audio)
-                    if text.lower() in ["pyxi", "pixie"]:
+                    print(text.lower())
+                    if "pixie" in text.lower():
                         print("Wake word detected.")
                         return True
         except sr.RequestError as e:
@@ -69,4 +70,12 @@ class Pyxi():
             return None
         
 
-    
+    # def close_microphone(self):
+    #     if self.m:
+    #         try:
+    #             self.m.__exit__(None, None, None)  # Manually exit the context to release the microphone
+    #             print("Microphone closed successfully.")
+    #         except Exception as e:
+    #             print(f"Error closing microphone: {e}")
+    #     else:
+    #         print("Microphone was not initialized.")

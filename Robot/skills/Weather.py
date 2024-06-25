@@ -5,7 +5,11 @@ from datetime import datetime
 import requests
 from utils import factory
 from utils.SpeechRecognition import Pyxi
+from utils.videoPlayer import Animate
+from utils.audioPlayer import Sound
+from utils.emailSender import Email
 from dataclasses import dataclass
+import time
 
 
 # Class for open weather api related functions
@@ -91,29 +95,36 @@ class Weather_Handler():
         return ["what's the weather", "tell me the weather", "weather",
                 "what's today's temperature", "today's temperature", "what's the temperature", "temperature"]
     
-    def get_weather(self):
+    def get_weather(self, video_player:Animate, audio_player=Sound):
         weather = self.weather_skill.weather
+        if "clouds" in weather.lower():
+            print("here")
+            video_player.play_animation("Cloudy")
+            audio_player.play_sound("Cloudy")
+        elif "rain" in weather:
+            video_player.play_animation("Rain")
+            audio_player.play_sound("Rain")
+        elif "thunder" in weather:
+            video_player.play_animation("Thunder")
+            audio_player.play_sound("Thunder")
+        else:
+            video_player.play_animation("Sunny")
+            audio_player.play_sound("Sunny")
         print(weather)
+        time.sleep(5)
     
-    def get_temp(self):
+    def get_temp(self, video_player:Animate, audio_player=Sound):
         temp = self.weather_skill.temp
-        print(temp)
+        # Add-on:  play display text sound
+        video_player.display_text(temp)
+        time.sleep(5)
 
-    def handle_command(self, command:str, robot:Pyxi):
+    def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):
         
         if command in ["what's the weather", "tell me the weather", "weather"]:
-            self.get_weather()
+            self.get_weather(video_player=video_player, audio_player=audio_player)
         if command in ["what's today's temperature", "today's temperature", "what's the temperature", "temperature"]:
-            print("here")
-            self.get_temp()
+            self.get_temp(video_player=video_player, audio_player=audio_player)
 
 def initialize():
     factory.register('weather_handler', Weather_Handler)
-    
-# myweather = Weather()
-# weather_data = myweather.weather
-
-# if weather_data:
-#     print(weather_data)
-# else:
-#     print("Weather data could not be retrieved.")

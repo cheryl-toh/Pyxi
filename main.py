@@ -1,5 +1,3 @@
-# frontend.py
-
 import socket
 from tkinter import messagebox
 import tkinter as tk
@@ -8,35 +6,43 @@ import threading
 from Server import server
 
 server_running = False
+server_thread = None  # Global variable to hold the server thread
 
 def start_server():
-    global server_running
+    global server_running, server_thread
 
-    server_running = True
-    update_button_state()
-    # Start the server in a separate thread
-    server_thread = threading.Thread(target=server.start_server)
-    server_thread.daemon = True  # Daemonize the thread so it exits when the main thread exits
-    server_thread.start()
-    messagebox.showinfo("Server Started", "Server started successfully!")
-
-def stop_server():
-    global server_running
+    if server_running:
+        messagebox.showinfo("Server Already Running", "Server is already running!")
+        return
 
     try:
+        server_thread = threading.Thread(target=start_server_thread)
+        server_thread.daemon = True  # Daemonize the thread so it exits when the main thread exits
+        server_thread.start()
+        server_running = True
+        update_button_state()
+        messagebox.showinfo("Server Started", "Server started successfully!")
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to start server: {e}")
+
+def start_server_thread():
+    server.start_server()
+
+def stop_server():
+    global server_running, server_thread
+
+    if not server_running:
+        messagebox.showinfo("Server Not Running", "Server is not running!")
+        return
+
+    try:
+        server.stop_server()
+        server_thread.join()  # Wait for the server thread to complete
         server_running = False
         update_button_state()
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.connect(("localhost", 12345))  # Connect to the server
-        client_socket.send("stop".encode())  # Send the "stop" command
-        client_socket.close()
         messagebox.showinfo("Server Stopped", "Server stopped successfully!")
     except Exception as e:
         messagebox.showerror("Error", f"Failed to stop server: {e}")
-    # Send "stop" command to the server
-    # Here, you need to implement the logic to send the "stop" command to the server
-    # For this example, I'll just print a message
-    print("Stop server button clicked")
 
 def update_button_state():
     if server_running:
