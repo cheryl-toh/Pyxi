@@ -2,6 +2,7 @@ from datetime import datetime
 import time
 import threading
 import pytz
+import re
 from countdowntimer import CountDownTimer
 from utils import factory
 from utils.SpeechRecognition import Pyxi
@@ -42,7 +43,7 @@ class Clock_Skill:
         local_time = datetime.now()
         local_timezone = pytz.timezone('Asia/Kuala_Lumpur')
         local_time = local_timezone.localize(local_time)
-        return datetime.strftime(local_time,'%H:%M:%S')
+        return datetime.strftime(local_time,'%I:%M %p')
     
     def timer(self, video_player:Animate, audio_player:Sound):
         if self.timer_instance.is_timer_active():
@@ -57,14 +58,14 @@ class Clock_Handler():
 
     def commands(self, command:str):
         return ["what's the time now", "tell me the time", "what time is it",
-                "start a timer"]
+                r".* timer"]
     
     def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):
         if command in ["what's the time now", "tell me the time", "what time is it"]:
             video_player.display_text(self.clock.local_time())
-            # Add-on: play clock show sound
+            audio_player.play_sound("ShowText")
             time.sleep(5)
-        if command in ["start a timer"]:
+        if "timer" in command:
             self.clock.timer(video_player=video_player, audio_player=audio_player)
 def initialize():
     factory.register('clock_handler', Clock_Handler)

@@ -92,8 +92,8 @@ class Weather_Handler():
     weather_skill = Weather_Skill()
 
     def commands(self, command:str):
-        return ["what's the weather", "tell me the weather", "weather",
-                "what's today's temperature", "today's temperature", "what's the temperature", "temperature"]
+        return [r".* weather .*", r"weather .*", r".* weather", "weather",
+                r".* temperature .*", r".* temperature", r"temperature .*", "temperature"]
     
     def get_weather(self, video_player:Animate, audio_player=Sound):
         weather = self.weather_skill.weather
@@ -114,16 +114,16 @@ class Weather_Handler():
         time.sleep(5)
     
     def get_temp(self, video_player:Animate, audio_player=Sound):
-        temp = self.weather_skill.temp
-        # Add-on:  play display text sound
+        temp = str(self.weather_skill.temp) + "°C"
+        audio_player.play_sound("Showtext")
         video_player.display_text(temp)
         time.sleep(5)
 
     def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):
         
-        if command in ["what's the weather", "tell me the weather", "weather"]:
+        if "weather" in command:
             self.get_weather(video_player=video_player, audio_player=audio_player)
-        if command in ["what's today's temperature", "today's temperature", "what's the temperature", "temperature"]:
+        if "temperature" in command:
             self.get_temp(video_player=video_player, audio_player=audio_player)
 
 def initialize():

@@ -1,5 +1,6 @@
 {
     "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock", "skills.Automate"],
+    "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock", "skills.Automate"],
     "skills": [
         
         {

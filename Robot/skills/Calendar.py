@@ -7,12 +7,12 @@ import pytz
 import git
 from datetime import datetime
 from dateutil.relativedelta import *
-from utils import factory
-from utils.SpeechRecognition import Pyxi
-from utils.videoPlayer import Animate
-from utils.audioPlayer import Sound
-from utils.emailSender import Email
-from dataclasses import dataclass
+# from utils import factory
+# from utils.SpeechRecognition import Pyxi
+# from utils.videoPlayer import Animate
+# from utils.audioPlayer import Sound
+# from utils.emailSender import Email
+# from dataclasses import dataclass
 
 calendar_filename = "/home/pi/Capstone Project/docs/myfile.ics"
 temp_calendar_filename = '/home/pi/Capstone Project/docs/temp.ics'
@@ -161,132 +161,150 @@ class Calendar_Skill():
             print("Changes committed and pushed to GitHub successfully.")
         except Exception as e:
             print(f"Error committing and pushing to GitHub: {e}")
-@dataclass
-class Calendar_Handler():
-    name = 'calendar_handler'
-    calendar = Calendar_Skill()
-    calendar.load()
+# @dataclass
+# class Calendar_Handler():
+#     name = 'calendar_handler'
+#     calendar = Calendar_Skill()
+#     calendar.load()
     
-    def commands(self, command:str):
-        return ['add event','add to calendar','new event','add a new event',
-                'delete event','remove event','cancel event',
-                'list events',"what's on this month","what's coming up this month",
-                "what's on this week","what's coming up this week","what's happening",
-                'list all events']
+#     def commands(self, command:str):
+#         return [r".* calendar .*", r".* calendar", r"calendar .*", r".* what's happening .*", r"what's happening .*", r".* what's happening"]
     
 
-    def add_event(self, robot:Pyxi)->bool:
-        try:
-            print("Event name")
-            event_name = robot.get_command()
-            print("name: ", event_name)
-            # Add-on: display on screen
-            # Add-on: display sound
-            print("When is this event?")
-            event_begin = robot.get_command()
-            parsed_date = dateparser.parse(event_begin, settings={'PREFER_DATES_FROM': 'future'})
-            if parsed_date is None:
-                # Add-on: dont understand sound
-                print("Sorry, I couldn't understand the date and time you provided.")
-                return False
-            localized_date = pytz.timezone('Asia/Kuala_Lumpur').localize(parsed_date)
-            event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
-            print("on: ", event_isodate)
-            # Add-on: display on screen
-            # Add-on: display sound
-            print("What is the event description?")
-            event_description = robot.get_command()
-            print("desc: ", event_description)
-            # Add-on: okay sound
-            print("Ok, adding event " + event_name)
-            self.calendar.add_event(begin=event_isodate, name=event_name, description=event_description)
-            print("event added")
-            # Add-on: play deploying animation
-            self.calendar.save()
-            # Add-on: play done deploy animation
-            return True
-        except:
-            print("opps there was an error")
-            return False
+#     def add_event(self, robot:Pyxi, video_player:Animate, audio_player:Sound)->bool:
+#         try:
+#             print("Event name")
+#             video_player.display_text("Event title?")
+#             audio_player.play_sound("Title")
+#             event_name = robot.get_command()
+#             print("name: ", event_name)
+            
+#             video_player.display_text("Time and Date?")
+#             audio_player.play_sound("TimeAndDate")
+#             print("When is this event?")
+#             event_begin = robot.get_command()
+#             parsed_date = dateparser.parse(event_begin, settings={'PREFER_DATES_FROM': 'future'})
+#             if parsed_date is None:
+#                 video_player.play_animation("Confused")
+#                 audio_player.play_sound("Dont-understand")
+#                 print("Sorry, I couldn't understand the date and time you provided.")
+#                 return False
+#             localized_date = pytz.timezone('Asia/Kuala_Lumpur').localize(parsed_date)
+#             event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
+#             print("on: ", event_isodate)
+
+#             video_player.display_text("Event description?")
+#             audio_player.play_sound("Description")
+#             print("What is the event description?")
+#             event_description = robot.get_command()
+#             print("desc: ", event_description)
+
+#             audio_player.play_sound("Okay")
+#             print("Ok, adding event " + event_name)
+#             self.calendar.add_event(begin=event_isodate, name=event_name, description=event_description)
+#             print("event added")
+
+#             video_player.play_animation("Push")
+#             audio_player.play_sound("Push")
+#             self.calendar.save()
+#             video_player.play_animation("Pushed")
+#             audio_player.play_sound("Pushed")
+
+#             return True
+#         except:
+#             print("opps there was an error")
+#             return False
         
-    def remove_event(self, robot:Pyxi)->bool:
-        # Add-on: display on screen
-        # Add-on: display sound
-        print("name of event")
-        try:
-            event_name = robot.get_command()
-            try:
-                self.calendar.remove_event(event_name=event_name)
-                # Add-on: okay sound
-                print("Event removed successfully")
-                # Add-on: play deploying animation
-                self.calendar.save()
-                # Add-on: play done deploy animation
-                return True
-            except:
-                # Add-on: sound and animation of cannot find event
-                print("Could not find ", event_name)
-                return False
-        except:
-            print("oops there was an error")
-            return False
+#     def remove_event(self, robot:Pyxi, video_player:Animate, audio_player:Sound)->bool:
         
-    # Add-on: send email of all events
-    def list_events(self, period, email:Email):
-        # Get the current date and time
-        current_datetime = datetime.now()
-        this_period = self.calendar.list_events(period=period)
-        if this_period is not None:
-            subject = f"Events in the Calendar as of {current_datetime.strftime('%Y-%m-%d %H:%M:%S')}"
-            content = f"Events in the Calendar - {len(this_period)} events\n\n"
+#         video_player.display_text("Event title?")
+#         audio_player.play_sound("Title")
+#         print("name of event")
+#         try:
+#             event_name = robot.get_command()
+#             try:
+#                 success = self.calendar.remove_event(event_name=event_name)
 
-            for event in this_period:
-                event_date = event.begin.datetime
-                weekday = event_date.strftime("%A")
-                day = str(event_date.day)
-                month = event_date.strftime("%B")
-                year = event_date.strftime("%Y")
-                time = event_date.strftime("%I:%M %p")
-                name = event.name
-                description = event.description
-
-                content += f"- Date: {event_date}\n"
-                content += f"  Name: {name}\n"
-                content += f"  Time: {time}\n"
-                content += f"  Description: {description}\n\n"
-
-            # Send the email with structured content
-            email.send_email(subject, content)
-
-        # Add another function to commit the ics file to github
-
-    def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):
+#                 if success:
+#                     audio_player.play_sound("Okay")
+#                     print("Event removed successfully")
+                    
+#                     video_player.play_animation("Push")
+#                     audio_player.play_sound("Push")
+#                     self.calendar.save()
+#                     video_player.play_animation("Pushed")
+#                     audio_player.play_sound("Pushed")
+                
+#                     return True
+#                 else:
+#                     video_player.play_animation("Confused")
+#                     audio_player.play_sound("No_event")
+                
+#             except:
+#                 video_player.play_animation("Confused")
+#                 audio_player.play_sound("Dont-understand")
+#                 print("Could not find ", event_name)
+#                 return False
+#         except:
+#             print("oops there was an error")
+#             return False
         
-        if command in ['add event','add to calendar','new event','add a new event']:
-            self.add_event(robot=robot)
-        if command in ['delete event','remove event','cancel event']:
-            self.remove_event(robot=robot)
-        if command in ['list events',"what's on this month","what's coming up this month"]:
-            self.list_events(period='this month')
-        if command in ["what's on this week","what's coming up this week","what's happening"]:
-            self.list_events(period='this week')
-        if command in ['list all events']:
-            self.list_events(period='all', email=email)
+    
+#     def list_events(self, period, video_player:Animate, audio_player:Sound, email:Email):
+#         # Get the current date and time
+#         current_datetime = datetime.now()
+#         this_period = self.calendar.list_events(period=period)
+#         if this_period is not None:
+#             subject = f"Events in the Calendar as of {current_datetime.strftime('%Y-%m-%d %H:%M:%S')}"
+#             content = f"Events in the Calendar - {len(this_period)} events\n\n"
 
-def initialize():
-    factory.register('calendar_handler', Calendar_Handler)
+#             for event in this_period:
+#                 event_date = event.begin.datetime
+#                 weekday = event_date.strftime("%A")
+#                 day = str(event_date.day)
+#                 month = event_date.strftime("%B")
+#                 year = event_date.strftime("%Y")
+#                 time = event_date.strftime("%I:%M %p")
+#                 name = event.name
+#                 description = event.description
 
-# calendar = Calendar_Skill()
-# parsed_date = dateparser.parse("tomorrow at 6 30 pm", settings={'PREFER_DATES_FROM': 'future'})
-# tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
-# parsed_date = parsed_date.replace(hour=18, minute=30)
-# localized_date = tz_kl.localize(parsed_date)
+#                 content += f"- Date: {event_date}\n"
+#                 content += f"  Name: {name}\n"
+#                 content += f"  Time: {time}\n"
+#                 content += f"  Description: {description}\n\n"
 
-# event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
-# print("on: ", event_isodate)
-# calendar.add_event(event_isodate, "event 1", "description 1")
-# calendar.save()
-# events = calendar.list_events(period='all')
+#             # Send the email with structured content
+#             email.send_email(subject, content)
+#             audio_player.play_sound("Okay")
+#             video_player.play_animation("Email")
 
-# for e in events:
-#     print(e.name, e.begin.datetime)
+#     def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):
+        
+#         if "add" in command:
+#             self.add_event(robot=robot, video_player=video_player, audio_player=audio_player)
+#         if "delete" in command or "cancel" in command or "remove" in command:
+#             self.remove_event(robot=robot, video_player=video_player, audio_player=audio_player)
+#         if "this month" in command:
+#             self.list_events(period='this month', video_player=video_player, audio_player=audio_player)
+#         elif "this week" in command:
+#             self.list_events(period='this week', video_player=video_player, audio_player=audio_player)
+#         elif command in ['list all events', "what's happening"] or "send" in command or "list" in command:
+#             self.list_events(period='all', video_player=video_player, audio_player=audio_player, email=email)
+
+# def initialize():
+#     factory.register('calendar_handler', Calendar_Handler)
+
+calendar = Calendar_Skill()
+parsed_date = dateparser.parse("tomorrow at 6 30 pm", settings={'PREFER_DATES_FROM': 'future'})
+tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
+parsed_date = parsed_date.replace(hour=18, minute=30)
+localized_date = tz_kl.localize(parsed_date)
+
+event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
+print("on: ", event_isodate)
+calendar.add_event(event_isodate, "event 1", "description 1")
+calendar.save()
+events = calendar.list_events(period='all')
+
+for e in events:
+    print(e.name, e.begin.datetime)
