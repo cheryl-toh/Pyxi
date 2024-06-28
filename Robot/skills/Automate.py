@@ -51,7 +51,8 @@ class Automate_Handler:
         elif "screenshot" in command:
             self.automate.send_command(f"screenshot", audio_player)
         else:
-            # Add-on: dont understand sound and animation
+            video_player.play_animation("Confused")
+            audio_player.play_sound("Dont-understand")
             print("Unknown command")
 
 def initialize():

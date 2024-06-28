@@ -31,7 +31,7 @@ class Pyxi():
             print("Listening for wake word...")
             while True:
                 with self.m as source:
-                    self.r.adjust_for_ambient_noise(source, duration=0.5)
+                    self.r.adjust_for_ambient_noise(source, duration=1)
                     audio = self.r.listen(source, 60, 2)
                     print("here")
                     text = self.r.recognize_google(audio)
@@ -52,14 +52,16 @@ class Pyxi():
         try:
             print("Say your command")
             with self.m as source:
-                self.r.adjust_for_ambient_noise(source, duration=0.5)
+                self.r.adjust_for_ambient_noise(source, duration=1)
                 
                 #listens for the user's input 
                 audio = self.r.listen(source, 60, 4)
                 self.video_player.play_animation("Loading")
                 self.audio_player.play_sound("Loading")
                 # Using google to recognize audio
+                print("here")
                 text = self.r.recognize_google(audio)
+                print("herere")
                 self.audio_player.stop()
                 text = text.lower()
 

@@ -91,6 +91,9 @@ class Todo_Handler():
             return True
         except:
             print("oops there was an error")
+            video_player.display_text("Error")
+            audio_player.play_sound("Error")
+            time.sleep(2)
             return False
 
     def list_todo(self, video_player:Animate, audio_player:Sound, email:Email):
@@ -146,6 +149,9 @@ class Todo_Handler():
             return True
         except:
             print("oops there was an error")
+            video_player.display_text("Error")
+            audio_player.play_sound("Error")
+            time.sleep(2)
             return False
     
     def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):

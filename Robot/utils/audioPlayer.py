@@ -21,14 +21,27 @@ class Sound():
         self.sound_thread.start()
 
     def _sound_worker(self, file_name:str):
-        file_path =  os.path.join(os.path.dirname(__file__), '..','..', 'Audio', f"{file_name}.wav")
 
-        pygame.mixer.music.load(file_path)
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
+        while not self.sound_stop_event.is_set():
+            if file_name == "Start":
+                file_path =  os.path.join(os.path.dirname(__file__), '..','..', 'Audio', f"{file_name}.wav")
+
+                pygame.mixer.music.load(file_path)
+                pygame.mixer.music.play()
+                while pygame.mixer.music.get_busy():
+                    pygame.time.Clock().tick(10)
+            else:
+                file_path =  os.path.join(os.path.dirname(__file__), '..','..', 'Audio', f"{file_name}.wav")
+
+                pygame.mixer.music.load(file_path)
+                pygame.mixer.music.play()
+                while pygame.mixer.music.get_busy():
+                    pygame.time.Clock().tick(10)
+                break
+
 
     def stop(self):
+        self.sound_stop_event.set()
         pygame.mixer.music.stop()
 
     def quit(self):

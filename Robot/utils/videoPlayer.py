@@ -96,8 +96,8 @@ class Animate():
         self.animation_stop_event.clear()
         self.animation_thread = threading.Thread(target=self._text_worker, args=(text, font_path, font_size))
         self.animation_thread.start()
-
-    # Main loop to display images in sequence
+        
+        # Main loop to display images in sequence
     def _animation_worker(self, image_folder:str):
         print("playing animation", image_folder)
         frame_number = 1
