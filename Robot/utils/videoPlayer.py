@@ -34,6 +34,10 @@ class Animate():
         print("display initialized")
         self.animation_thread = None
         self.animation_stop_event = threading.Event()
+        self.alarm_state = False
+        self.playing_pending = False
+        self.current_folder = ""
+        self.previous_folder = ""
 
 
     def convert_rgb_to_bgr(self, image):
@@ -78,19 +82,26 @@ class Animate():
 
     def play_animation(self, animation_folder):
         print("Playing animation:", animation_folder)
+
         if self.animation_thread and self.animation_thread.is_alive():
             self.animation_stop_event.set()  # Set stop event to terminate current animation thread
             self.animation_thread.join()
-
+        
+        self.previous_folder = self.current_folder
+        self.current_folder = animation_folder
+        
+        print(self.previous_folder, self.current_folder)
         # Start a new animation thread
         self.animation_stop_event.clear()
         self.animation_thread = threading.Thread(target=self._animation_worker, args=(animation_folder,))
         self.animation_thread.start()
 
+
     def display_text(self, text, font_path=None, font_size=20):
         if self.animation_thread and self.animation_thread.is_alive():
-            self.animation_stop_event.set()  # Set stop event to terminate current animation thread
-            self.animation_thread.join()
+            if (not self.alarm_state and self.previous_folder != "Alarm") or animation_folder == "Alarm":
+                self.animation_stop_event.set()  # Set stop event to terminate current animation thread
+                self.animation_thread.join()
 
         # Start a new animation thread
         self.animation_stop_event.clear()
@@ -103,15 +114,21 @@ class Animate():
         frame_number = 1
         animation_path = os.path.join(os.path.dirname(__file__), '..','..', 'Animation', image_folder)
         while not self.animation_stop_event.is_set():
-            image_path = os.path.join(animation_path, f'{image_folder} ({frame_number}).jpg')
-            if os.path.exists(image_path):
-                self.display_image(image_path)
-                frame_number += 1
-            else:
-                if image_folder == "Neutral Static" or image_folder == "Start":
-                    frame_number = 1  # Reset to first frame if the last frame is reached
+            if not self.alarm_state or image_folder == "Alarm":
+                image_path = os.path.join(animation_path, f'{image_folder} ({frame_number}).jpg')
+                if os.path.exists(image_path):
+                    self.display_image(image_path)
+                    frame_number += 1
                 else:
-                    break
+                    if image_folder == "Neutral Static" or image_folder == "Start":
+                        frame_number = 1  # Reset to first frame if the last frame is reached
+                    else:
+                        break
+            else:
+                break
+        
+        if self.playing_pending:
+            self.playing_pending = False
 
     def _text_worker(self, text, font_path=None, font_size=20):
         try:
@@ -145,3 +162,6 @@ class Animate():
 
         except Exception as e:
             print(f"Error displaying text: {e}")
+
+    def save_current_animation(self, animation_folder):
+        self.previous_animation = animation_folder 

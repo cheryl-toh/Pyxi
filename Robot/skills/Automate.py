@@ -8,12 +8,13 @@ from utils import factory
 
 class Automate_Skill:
     def __init__(self):
-        self.host = '192.168.1.27'  # Change: Windows machine IP
+        self.host = '192.168.115.208'  # Change: Windows machine IP
         self.port = 12345
 
-    def send_command(self, command: str, audio_player:Sound):
+    def send_command(self, command: str, video_player:Animate, audio_player:Sound):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                self.client_socket = s
                 s.settimeout(1)
                 s.connect((self.host, self.port))
                 s.send(command.encode())
@@ -22,6 +23,8 @@ class Automate_Skill:
 
             self.close_connection()
         except Exception as e:
+            video_player.display_text("Server Down")
+            audio_player.play_sound("Error")
             print(f"Error sending command: {e}")
 
     def close_connection(self):
@@ -35,21 +38,30 @@ class Automate_Handler:
     automate = Automate_Skill()
 
     def commands(self, command: str):
-        return ["play me a song", r"^play .+$", r"^open .+$", "record my screen", "screen record", "take a screenshot", ]
+        return ["play me a song", r"^play .+$", r"^open .+$", "record my screen", "screen record", "take a screenshot",
+        r".* shut down .*", r".* shut down", r"shut down .*",
+        r".* sleep .*", r".* sleep", r"sleep .*",
+        r".* restart .*", r".* restart", r"restart .*"]
 
     def handle_command(self, command: str, robot: Pyxi, video_player: Animate, audio_player:Sound, email:Email):
         if "play me a song" in command:
-            self.automate.send_command("play me a song", audio_player)
+            self.automate.send_command("play me a song", video_player, audio_player)
         elif "play" in command:
             song_name = command.replace("play", "").strip()
-            self.automate.send_command(f"play {song_name}", audio_player)
+            self.automate.send_command(f"play {song_name}", video_player, audio_player)
         elif "open" in command:
             app_name = command.replace("open", "").strip()
-            self.automate.send_command(f"open {app_name}", audio_player)
+            self.automate.send_command(f"open {app_name}", video_player, audio_player)
         elif "record my screen" in command:
-            self.automate.send_command(f"record", audio_player)
+            self.automate.send_command(f"record", video_player, audio_player)
         elif "screenshot" in command:
-            self.automate.send_command(f"screenshot", audio_player)
+            self.automate.send_command(f"screenshot", video_player, audio_player)
+        elif "shut down" in command:
+            self.automate.send_command(f"shutdown", video_player, audio_player)
+        elif "sleep" in command:
+            self.automate.send_command(f"sleep", video_player, audio_player)
+        elif "restart" in command:
+            self.automate.send_command(f"restart", video_player, audio_player)
         else:
             video_player.play_animation("Confused")
             audio_player.play_sound("Dont-understand")

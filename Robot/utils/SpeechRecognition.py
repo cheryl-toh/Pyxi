@@ -1,6 +1,10 @@
 import speech_recognition as sr
+import pvporcupine
+import pyaudio
+import struct
 from .videoPlayer import Animate
 from .audioPlayer import Sound
+import os
 
 # Class for pyxi's speech recognition and responses
 class Pyxi():
@@ -12,7 +16,9 @@ class Pyxi():
         self.m = sr.Microphone(sample_rate=44100)
         self.video_player = video_player
         self.audio_player = audio_player
-        self.keywords = ["pixie", "pictures", "bixby", "kitty", "hello"]
+        self.wake_word_path =  os.path.join(os.path.dirname(__file__), "wakeword.ppn")
+        self.porcupine = pvporcupine.create(access_key="xaXfRKmlPbzR5pqcLKM2rchbUOlfaba2+QS/Vjl4jGW/v66ZiaNOrA==", keyword_paths=[self.wake_word_path])
+        self.audio_stream = None
         if name is not None:
             self.name = name
         with self.m as source:
@@ -27,26 +33,29 @@ class Pyxi():
         self.name = value
 
     def wake_word(self):
-        try: 
+            self.audio_stream = pyaudio.PyAudio().open(
+                rate=self.porcupine.sample_rate,
+                channels=1,
+                format=pyaudio.paInt16,
+                input=True,
+                frames_per_buffer=self.porcupine.frame_length
+            )
+
             print("Listening for wake word...")
-            while True:
-                with self.m as source:
-                    self.r.adjust_for_ambient_noise(source, duration=1)
-                    audio = self.r.listen(source, 60, 2)
-                    print("here")
-                    text = self.r.recognize_google(audio)
-                    print("herere")
-                    print(text.lower())
-                    if any(keyword in text.lower() for keyword in self.keywords):
+            try:
+                while True:
+                    pcm = self.audio_stream.read(self.porcupine.frame_length)
+                    pcm = struct.unpack_from("h" * self.porcupine.frame_length, pcm)
+
+                    keyword_index = self.porcupine.process(pcm)
+                    if keyword_index >= 0:
                         print("Wake word detected.")
                         return True
-        except sr.RequestError as e:
-            print("Could not request results; {0}".format(e))
-            return False
-                
-        except sr.UnknownValueError:
-            print("Unknown error occurred")
-            return None
+            except KeyboardInterrupt:
+                print("Stopping...")
+            finally:
+                if self.audio_stream is not None:
+                    self.audio_stream.close()
 
     def get_command(self):
         try:
@@ -85,3 +94,7 @@ class Pyxi():
                 print(f"Error closing microphone: {e}")
         else:
             print("Microphone was not initialized.")
+
+        if self.audio_stream is not None:
+            self.audio_stream.close()
+        self.porcupine.delete()

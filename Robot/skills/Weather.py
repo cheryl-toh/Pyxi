@@ -56,7 +56,7 @@ class Weather_Skill:
         try:
 
             weather_data = requests.get(
-                f"https://api.openweathermap.org/data/2.5/weather?lat={self.lat}&lon={self.long}&units=imperial&APPID={self.apiKey}")
+                f"https://api.openweathermap.org/data/2.5/weather?lat={self.lat}&lon={self.long}&units=imperial&APPID={self.apiKey}", verify=False)
 
             if weather_data.json()['cod'] == '404':
                 print("No City Found")
@@ -81,7 +81,9 @@ class Weather_Skill:
                 print("No City Found")
             else:
                 temp = round(weather_data.json()['main']['temp'])
-            return temp
+                c_temp = round(((temp-32)*5)/9, 1)
+                print(c_temp)
+            return c_temp
         except Exception as e:
             print(f"Error retrieving weather data: {e}")
             return None

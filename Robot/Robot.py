@@ -36,8 +36,10 @@ command = ""
 audio_player.play_sound("Start")
 video_player.play_animation("Start")
 
+file_path = os.path.join(os.path.dirname(__file__), 'utils', 'skills.json')
+
 # load the skills
-with open("./utils/skills.json") as f:
+with open(file_path) as f:
     data = json.load(f)
     print("loading module", data)
 
@@ -74,6 +76,7 @@ while True and command not in ["good bye", 'bye', 'quit', 'exit', 'goodbye', 'ex
                         audio_player.play_sound("Wake")
                         break
                 if not handled:
+                    print("DONT UNDERSTAND")
                     audio_player.play_sound("Dont-understand")
                     video_player.play_animation("Confused")
                     time.sleep(3)

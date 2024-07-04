@@ -116,7 +116,7 @@ class Calendar_Skill():
 
     def list_events(self, period)->bool:
         if period == None:
-            period = "this week"
+            period = "all"
 
         # check that there are events
         if self.calendar.events == set():
@@ -136,6 +136,8 @@ class Calendar_Skill():
                 event_date = event.begin.datetime
                 if (event_date >= now) and (event_date <= nextperiod):    
                     event_list.append(event)
+
+            print(event_list)
             return event_list
         
     def commit_to_github(self, file_path, commit_message="Update file"):
@@ -153,7 +155,7 @@ class Calendar_Skill():
                 repo.git.config('user.name', 'cheryl-toh')
 
             # Stage the changes
-            repo.git.add(file_path)
+            repo.git.add(.)
 
             # Commit the changes
             repo.index.commit(commit_message)
@@ -172,7 +174,11 @@ class Calendar_Handler():
     calendar.load()
     
     def commands(self, command:str):
-        return [r".* calendar .*", r".* calendar", r"calendar .*", r".* what's happening .*", r"what's happening .*", r".* what's happening"]
+        return [r".* calendar .*", r".* calendar", r"calendar .*", 
+        r".* what's happening .*", r"what's happening .*", r".* what's happening",  "what's happening"
+        r".* what is happening .*", r"what is happening .*", r".* what is happening",
+        r".* event .*", r".* event", r"event .*",
+        r".* events .*", r".* events", r"events .*"]
     
 
     def add_event(self, robot:Pyxi, video_player:Animate, audio_player:Sound)->bool:
@@ -183,7 +189,7 @@ class Calendar_Handler():
             event_name = robot.get_command()
             print("name: ", event_name)
             
-            video_player.display_text("Time and Date?")
+            video_player.display_text("Date Time?")
             audio_player.play_sound("TimeAndDate")
             print("When is this event?")
             event_begin = robot.get_command()
@@ -312,14 +318,18 @@ class Calendar_Handler():
         
         if "add" in command:
             self.add_event(robot=robot, video_player=video_player, audio_player=audio_player)
-        if "delete" in command or "cancel" in command or "remove" in command:
+        elif "delete" in command or "cancel" in command or "remove" in command:
             self.remove_event(robot=robot, video_player=video_player, audio_player=audio_player)
-        if "this month" in command:
+        elif "this month" in command:
             self.list_events(period='this month', video_player=video_player, audio_player=audio_player)
         elif "this week" in command:
             self.list_events(period='this week', video_player=video_player, audio_player=audio_player)
-        elif command in ['list all events', "what's happening"] or "send" in command or "list" in command:
+        elif command in ['list all events', "what's happening"] or "send" in command or "list" in command or "what" in command:
             self.list_events(period='all', video_player=video_player, audio_player=audio_player, email=email)
+        else:
+            video_player.play_animation("Confused")
+            audio_player.play_sound("Dont-understand")
+            print("Unknown command")
 
 def initialize():
     factory.register('calendar_handler', Calendar_Handler)

@@ -159,12 +159,16 @@ class Todo_Handler():
         if "add" in command:
             print("here")
             self.add_todo(robot=robot, video_player=video_player, audio_player=audio_player)
-        if "send" in command:
-            self.list_todo(video_player=video_player, audio_player=audio_player, email=email)
-        if "remove" in command:
+        elif "remove" in command:
             self.remove_todo(robot=robot, video_player=video_player, audio_player=audio_player)
-        if "empty" in command:
+        elif "empty" in command:
             self.empty_todo(video_player=video_player, audio_player=audio_player)
+        elif "send" in command or "list" in command:
+            self.list_todo(video_player=video_player, audio_player=audio_player, email=email)
+        else:
+            video_player.play_animation("Confused")
+            audio_player.play_sound("Dont-understand")
+            print("Unknown command")
 
 def initialize():
     factory.register('todo_handler', Todo_Handler)

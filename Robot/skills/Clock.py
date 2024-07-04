@@ -19,9 +19,11 @@ class Timer:
     def countdown(self, video_player:Animate, audio_player:Sound):
         while not self.timer.isalarm():
             time.sleep(0.5)
+        audio_player.stop()
         video_player.play_animation("Alarm")
-        audio_player.play_sound("Alarm")
+        audio_player.play_sound("Clock")
         time.sleep(4.5)
+        print("FINISH PLAY ALARMMMMMMMM")
 
     def start_countdown(self, video_player:Animate, audio_player:Sound):
         self.timer.reset() 
