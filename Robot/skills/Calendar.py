@@ -155,7 +155,7 @@ class Calendar_Skill():
                 repo.git.config('user.name', 'cheryl-toh')
 
             # Stage the changes
-            repo.git.add(.)
+            repo.git.add('--all')
 
             # Commit the changes
             repo.index.commit(commit_message)
