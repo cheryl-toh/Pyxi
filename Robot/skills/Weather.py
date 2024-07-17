@@ -35,9 +35,7 @@ class Weather_Skill:
             loc = locator.geocode(self.__location)
             if loc:
                 self.lat = loc.latitude
-                print(loc.latitude)
                 self.long = loc.longitude
-                print(loc.longitude)
             else:
                 raise ValueError("Location not found")
         except GeocoderTimedOut:
@@ -82,7 +80,6 @@ class Weather_Skill:
             else:
                 temp = round(weather_data.json()['main']['temp'])
                 c_temp = round(((temp-32)*5)/9, 1)
-                print(c_temp)
             return c_temp
         except Exception as e:
             print(f"Error retrieving weather data: {e}")
@@ -100,7 +97,6 @@ class Weather_Handler():
     def get_weather(self, video_player:Animate, audio_player=Sound):
         weather = self.weather_skill.weather
         if "clouds" in weather.lower():
-            print("here")
             video_player.play_animation("Cloudy")
             audio_player.play_sound("Cloudy")
         elif "rain" in weather:
@@ -112,7 +108,6 @@ class Weather_Handler():
         else:
             video_player.play_animation("Sunny")
             audio_player.play_sound("Sunny")
-        print(weather)
         time.sleep(5)
     
     def get_temp(self, video_player:Animate, audio_player=Sound):

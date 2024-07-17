@@ -57,7 +57,6 @@ class Calendar_Skill():
             my_event['name'] = event.name
             my_event['description'] = event.description
             dict.append(my_event)
-            # print('parsing file:', yaml.dump(dict, default_flow_style=False))
         return dict
     
     def save(self):
@@ -187,11 +186,9 @@ class Calendar_Handler():
             video_player.display_text("Event title?")
             audio_player.play_sound("Title")
             event_name = robot.get_command()
-            print("name: ", event_name)
             
             video_player.display_text("Date Time?")
             audio_player.play_sound("TimeAndDate")
-            print("When is this event?")
             event_begin = robot.get_command()
             parsed_date = dateparser.parse(event_begin, settings={'PREFER_DATES_FROM': 'future'})
             if parsed_date is None:
@@ -207,7 +204,6 @@ class Calendar_Handler():
             audio_player.play_sound("Description")
             print("What is the event description?")
             event_description = robot.get_command()
-            print("desc: ", event_description)
             audio_player.play_sound("Okay")
             video_player.play_animation("Loading")
             
@@ -240,7 +236,6 @@ class Calendar_Handler():
         
         video_player.display_text("Event title?")
         audio_player.play_sound("Title")
-        print("name of event")
         try:
             event_name = robot.get_command()
             try:
@@ -333,18 +328,3 @@ class Calendar_Handler():
 
 def initialize():
     factory.register('calendar_handler', Calendar_Handler)
-
-# calendar = Calendar_Skill()
-# parsed_date = dateparser.parse("tomorrow at 6 30 pm", settings={'PREFER_DATES_FROM': 'future'})
-# tz_kl = pytz.timezone('Asia/Kuala_Lumpur')
-# parsed_date = parsed_date.replace(hour=18, minute=30)
-# localized_date = tz_kl.localize(parsed_date)
-
-# event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
-# print("on: ", event_isodate)
-# calendar.add_event(event_isodate, "event 1", "description 1")
-# calendar.save()
-# events = calendar.list_events(period='all')
-
-# for e in events:
-#     print(e.name, e.begin.datetime)

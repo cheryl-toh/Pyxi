@@ -67,10 +67,7 @@ class Pyxi():
                 audio = self.r.listen(source, 60, 4)
                 self.video_player.play_animation("Loading")
                 self.audio_player.play_sound("Loading")
-                # Using google to recognize audio
-                print("here")
                 text = self.r.recognize_google(audio)
-                print("herere")
                 self.audio_player.stop()
                 text = text.lower()
 
