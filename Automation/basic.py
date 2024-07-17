@@ -36,7 +36,7 @@ def screen_record():
 
 
 # code for turning off or sleeping laptop - 5
-def laptop(action):
+def laptop(action:str):
     keyboard.send_keys('{VK_LWIN down}x{VK_LWIN up}')
     time.sleep(0.5)
 

@@ -59,6 +59,15 @@ def handle_client(client_socket, addr):
             elif user_input.lower() == "record":
                 basic.screen_record()
 
+            elif user_input.lower() == "shutdown":
+                basic.laptop("shutdown")
+
+            elif user_input.lower() == "sleep":
+                basic.laptop("sleep")
+            elif user_input.lower() == "restart":
+                basic.laptop("restart")
+            
+
     except Exception as e:
         print(f"Error handling client {addr}: {e}")
 
