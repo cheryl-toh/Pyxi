@@ -122,6 +122,11 @@ class Animate():
                 else:
                     if image_folder == "Neutral Static" or image_folder == "Start":
                         frame_number = 1  # Reset to first frame if the last frame is reached
+                    elif image_folder == "Alarm":
+                        image_folder = self.previous_folder
+                        frame_number = 1
+                        animation_path = os.path.join(os.path.dirname(__file__), '..', '..', 'Animation', image_folder)
+                        continue 
                     else:
                         break
             else:
@@ -163,5 +168,3 @@ class Animate():
         except Exception as e:
             print(f"Error displaying text: {e}")
 
-    def save_current_animation(self, animation_folder):
-        self.previous_animation = animation_folder 

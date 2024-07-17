@@ -23,7 +23,6 @@ class Timer:
         video_player.play_animation("Alarm")
         audio_player.play_sound("Clock")
         time.sleep(4.5)
-        print("FINISH PLAY ALARMMMMMMMM")
 
     def start_countdown(self, video_player:Animate, audio_player:Sound):
         self.timer.reset() 

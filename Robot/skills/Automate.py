@@ -8,7 +8,7 @@ from utils import factory
 
 class Automate_Skill:
     def __init__(self):
-        self.host = '192.168.115.208'  # Change: Windows machine IP
+        self.host = '192.168.211.208'  # Change: Windows machine IP
         self.port = 12345
 
     def send_command(self, command: str, video_player:Animate, audio_player:Sound):

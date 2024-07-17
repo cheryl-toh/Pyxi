@@ -203,7 +203,7 @@ class Calendar_Handler():
             event_isodate = localized_date.strftime("%Y-%m-%d %H:%M:%S")
             print("on: ", event_isodate)
 
-            video_player.display_text("Event description?")
+            video_player.display_text("Description?")
             audio_player.play_sound("Description")
             print("What is the event description?")
             event_description = robot.get_command()
