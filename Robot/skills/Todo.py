@@ -157,7 +157,6 @@ class Todo_Handler():
     def handle_command(self, command:str, robot:Pyxi, video_player:Animate, audio_player:Sound, email:Email):
         
         if "add" in command:
-            print("here")
             self.add_todo(robot=robot, video_player=video_player, audio_player=audio_player)
         elif "remove" in command:
             self.remove_todo(robot=robot, video_player=video_player, audio_player=audio_player)

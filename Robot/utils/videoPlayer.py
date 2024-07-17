@@ -81,7 +81,6 @@ class Animate():
             print(f"Error displaying image {image_path}: {e}")
 
     def play_animation(self, animation_folder):
-        print("Playing animation:", animation_folder)
 
         if self.animation_thread and self.animation_thread.is_alive():
             self.animation_stop_event.set()  # Set stop event to terminate current animation thread
@@ -90,7 +89,6 @@ class Animate():
         self.previous_folder = self.current_folder
         self.current_folder = animation_folder
         
-        print(self.previous_folder, self.current_folder)
         # Start a new animation thread
         self.animation_stop_event.clear()
         self.animation_thread = threading.Thread(target=self._animation_worker, args=(animation_folder,))
@@ -110,7 +108,6 @@ class Animate():
         
         # Main loop to display images in sequence
     def _animation_worker(self, image_folder:str):
-        print("playing animation", image_folder)
         frame_number = 1
         animation_path = os.path.join(os.path.dirname(__file__), '..','..', 'Animation', image_folder)
         while not self.animation_stop_event.is_set():

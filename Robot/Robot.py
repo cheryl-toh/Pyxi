@@ -76,7 +76,6 @@ while True and command not in ["good bye", 'bye', 'quit', 'exit', 'goodbye', 'ex
                         audio_player.play_sound("Wake")
                         break
                 if not handled:
-                    print("DONT UNDERSTAND")
                     audio_player.play_sound("Dont-understand")
                     video_player.play_animation("Confused")
                     time.sleep(3)
