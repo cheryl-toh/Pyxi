@@ -104,8 +104,8 @@ class Weather_Handler():
             video_player.play_animation("Cloudy")
             audio_player.play_sound("Cloudy")
         elif "rain" in weather:
-            video_player.play_animation("Rain")
-            audio_player.play_sound("Rain")
+            video_player.play_animation("Rainy")
+            audio_player.play_sound("Rainy")
         elif "thunder" in weather:
             video_player.play_animation("Thunder")
             audio_player.play_sound("Thunder")
