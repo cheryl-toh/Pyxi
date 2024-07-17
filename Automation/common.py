@@ -10,10 +10,8 @@ def find_window(title, retries=2, delay=1):
         for win in windows:
             if re.search(re.escape(title), win.window_text(), re.IGNORECASE):
                 print(f"Found window with title '{title}'")
-                print(win)
                 return win
         time.sleep(delay)
-    print(win)
     return None
 
 def start_app(title):
