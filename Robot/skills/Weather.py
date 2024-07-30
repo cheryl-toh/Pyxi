@@ -96,18 +96,22 @@ class Weather_Handler():
     
     def get_weather(self, video_player:Animate, audio_player=Sound):
         weather = self.weather_skill.weather
-        if "clouds" in weather.lower():
+        if weather:
+            if "clouds" in weather.lower():
+                video_player.play_animation("Cloudy")
+                audio_player.play_sound("Cloudy")
+            elif "rain" in weather:
+                video_player.play_animation("Rainy")
+                audio_player.play_sound("Rainy")
+            elif "thunder" in weather:
+                video_player.play_animation("Thunder")
+                audio_player.play_sound("Thunder")
+            else:
+                video_player.play_animation("Sunny")
+                audio_player.play_sound("Sunny")
+        else:
             video_player.play_animation("Cloudy")
             audio_player.play_sound("Cloudy")
-        elif "rain" in weather:
-            video_player.play_animation("Rainy")
-            audio_player.play_sound("Rainy")
-        elif "thunder" in weather:
-            video_player.play_animation("Thunder")
-            audio_player.play_sound("Thunder")
-        else:
-            video_player.play_animation("Sunny")
-            audio_player.play_sound("Sunny")
         time.sleep(5)
     
     def get_temp(self, video_player:Animate, audio_player=Sound):
