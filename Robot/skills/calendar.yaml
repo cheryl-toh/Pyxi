@@ -1,18 +1,21 @@
 - begin: 2024-07-31 15:00:00+00:00
   description: physical presentation
   name: presentation
-- begin: 2024-07-04 15:30:00+00:00
-  description: perform user testing
-  name: pixies us
-- begin: 2024-07-17 20:30:00+00:00
-  description: no description
-  name: change guitar
-- begin: 2024-08-05 10:00:00+00:00
-  description: add clinic
-  name: doctor's appointment
 - begin: 2024-07-03 16:00:00+00:00
   description: no description
   name: pixi user testing
+- begin: 2024-07-17 20:30:00+00:00
+  description: no description
+  name: change guitar
+- begin: 2024-07-30 20:00:00+00:00
+  description: go to nearest supermark
+  name: buy groceries
+- begin: 2024-07-04 15:30:00+00:00
+  description: perform user testing
+  name: pixies us
+- begin: 2024-08-05 10:00:00+00:00
+  description: add clinic
+  name: doctor's appointment
 - begin: 2024-07-04 06:00:00+00:00
   description: no description
   name: temporary
