@@ -45,12 +45,41 @@ class Clock_Skill:
         local_timezone = pytz.timezone('Asia/Kuala_Lumpur')
         local_time = local_timezone.localize(local_time)
         return datetime.strftime(local_time,'%I:%M %p')
+
+    def parse_timer_duration(self, command: str):
+        # Convert the command to lowercase to simplify matching
+        command = command.lower()
+        
+        # Regular expression to match time duration like '10 seconds', '1 hour 30 minutes'
+        time_pattern = re.compile(r'(\d+)\s*(second|minute|hour)s?', re.IGNORECASE)
+        
+        time_units = {
+            'second': 1,
+            'minute': 60,
+            'hour': 3600
+        }
+        
+        duration_in_seconds = 0
+
+        # Find all matches in the command
+        matches = time_pattern.findall(command)
+        for match in matches:
+            amount, unit = match
+            duration_in_seconds += int(amount) * time_units[unit]
+
+        return duration_in_seconds
     
-    def timer(self, video_player:Animate, audio_player:Sound):
+    def timer(self, command:Str, video_player:Animate, audio_player:Sound):
         if self.timer_instance.is_timer_active():
             print("Timer is already running.")
             return
-        self.timer_instance.start_countdown(video_player=video_player, audio_player=audio_player)
+        
+        duration_in_seconds = self.parse_timer_duration(command)
+        
+        if duration_in_seconds > 0:
+            self.timer_instance.start_countdown(duration_in_seconds=duration_in_seconds, video_player=video_player, audio_player=audio_player)
+        else:
+            self.timer_instance.start_countdown(duration_in_seconds=10, video_player=video_player, audio_player=audio_player)
 
 @dataclass
 class Clock_Handler():
@@ -67,6 +96,6 @@ class Clock_Handler():
             audio_player.play_sound("ShowText")
             time.sleep(5)
         if "timer" in command:
-            self.clock.timer(video_player=video_player, audio_player=audio_player)
+            self.clock.timer(command= command, video_player=video_player, audio_player=audio_player)
 def initialize():
     factory.register('clock_handler', Clock_Handler)
