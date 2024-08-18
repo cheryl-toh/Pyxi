@@ -12,17 +12,21 @@ class Pyxi():
     skill = []
 
     def __init__(self, name=None, video_player=None, audio_player=None):
+        print("init")
         self.r = sr.Recognizer()
         self.m = sr.Microphone(sample_rate=44100)
         self.video_player = video_player
         self.audio_player = audio_player
         self.wake_word_path =  os.path.join(os.path.dirname(__file__), "wakeword.ppn")
-        self.porcupine = pvporcupine.create(access_key="xaXfRKmlPbzR5pqcLKM2rchbUOlfaba2+QS/Vjl4jGW/v66ZiaNOrA==", keyword_paths=[self.wake_word_path])
+        self.access_key = os.getenv("WAKE_WORD_ACCESS_KEY")
+        self.porcupine = pvporcupine.create(access_key=self.access_key, keyword_paths=[self.wake_word_path])
         self.audio_stream = None
         if name is not None:
             self.name = name
         with self.m as source:
             self.r.adjust_for_ambient_noise(source)
+
+        
         
     @property
     def name(self):

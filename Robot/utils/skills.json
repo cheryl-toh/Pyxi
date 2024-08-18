@@ -1,5 +1,5 @@
 {
-    "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock", "skills.Automate", "skills.General"],
+    "plugins": ["skills.Calendar", "skills.Todo", "skills.Weather", "skills.Clock", "skills.Automate", "skills.General", "skills.Easter"],
     "skills": [
         
         {
@@ -19,6 +19,9 @@
         },
         {
             "name": "general_handler"
+        },
+        {
+            "name": "easter_handler"
         }
     ]
 }

@@ -12,3 +12,4 @@ pillow
 ST7735
 Adafruit_GPIO
 git
+python-dotenv

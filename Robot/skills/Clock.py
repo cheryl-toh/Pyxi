@@ -24,9 +24,9 @@ class Timer:
         audio_player.play_sound("Clock")
         time.sleep(4.5)
 
-    def start_countdown(self, video_player:Animate, audio_player:Sound):
+    def start_countdown(self,  duration_in_seconds: int, video_player:Animate, audio_player:Sound):
         self.timer.reset() 
-        self.timer.duration_in_seconds = 10
+        self.timer.duration_in_seconds = duration_in_seconds
         audio_player.play_sound("Okay")
         print("Countdown started, I'll let you know when it's done")
         self.timer_thread = threading.Thread(target=self.countdown, args=(video_player, audio_player,))
@@ -47,7 +47,7 @@ class Clock_Skill:
         return datetime.strftime(local_time,'%I:%M %p')
 
     def parse_timer_duration(self, command: str):
-        # Convert the command to lowercase to simplify matching
+        # Convert the command to lowercase to simplify matchinglami
         command = command.lower()
         
         # Regular expression to match time duration like '10 seconds', '1 hour 30 minutes'
@@ -69,12 +69,13 @@ class Clock_Skill:
 
         return duration_in_seconds
     
-    def timer(self, command:Str, video_player:Animate, audio_player:Sound):
+    def timer(self, command:str, video_player:Animate, audio_player:Sound):
         if self.timer_instance.is_timer_active():
             print("Timer is already running.")
             return
         
         duration_in_seconds = self.parse_timer_duration(command)
+        # print("timer of " + duration_in_seconds)
         
         if duration_in_seconds > 0:
             self.timer_instance.start_countdown(duration_in_seconds=duration_in_seconds, video_player=video_player, audio_player=audio_player)

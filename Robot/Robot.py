@@ -8,8 +8,8 @@ from utils import factory, loader
 import contextlib
 import re
 import time
+from dotenv import load_dotenv
 
-# Context manager to suppress ALSA warnings
 @contextlib.contextmanager
 def suppress_alsa_warnings():
     f = open(os.devnull, 'w')
@@ -20,16 +20,21 @@ def suppress_alsa_warnings():
     finally:
         os.dup2(fd, 2)
         f.close()
+
+# Load environment variables from .env file
+load_dotenv()
 video_player = Animate()
 audio_player = Sound()
 email_sender = Email()
+
 # Initialize objects
 with suppress_alsa_warnings():
     robot = Pyxi(video_player=video_player, audio_player=audio_player)
+    print("here")
 
 
-# audio_player.play_sound("Name")
-break_words = ["goodbye", "bye", "bye-bye", "go to sleep"]
+break_words = ["goodbye", "bye", "bye-bye"]
+sleep = False
 command = ""
 
 # Play initial loading screen
@@ -53,10 +58,12 @@ audio_player.play_sound("Wake")
 
 # main loop
 while True and command not in ["good bye", 'bye', 'quit', 'exit', 'goodbye', 'exit']:
-    video_player.play_animation("Neutral Static")
+    if not sleep:
+        video_player.play_animation("Neutral Static")
     command = ""
     with suppress_alsa_warnings():
         if robot.wake_word():
+            sleep = False
             audio_player.play_sound("Huh")
             video_player.play_animation("Listen")
             command = robot.get_command()
@@ -66,15 +73,19 @@ while True and command not in ["good bye", 'bye', 'quit', 'exit', 'goodbye', 'ex
                 print(f'command heard: {command}')
                 if any(keyword in command for keyword in break_words):
                     break
-                for skill in skills:
-                    for pattern in skill.commands(command):
-                        if re.match(pattern, command):
-                            skill.handle_command(command, robot=robot, video_player=video_player, audio_player=audio_player, email=email_sender)
-                            handled = True
-                            break
-                    if handled:
-                        audio_player.play_sound("Wake")
-                        break
+                if command in ["go to sleep"]:
+                    audio_player.play_sound("Yawn")
+                    video_player.play_animation("Sleep")
+                    sleep = True
+                else:
+                    for skill in skills:
+                        for pattern in skill.commands(command):
+                            if re.match(pattern, command):
+                                skill.handle_command(command, robot=robot, video_player=video_player, audio_player=audio_player, email=email_sender)
+                                handled = True
+                                break
+                if handled:
+                    audio_player.play_sound("Wake")
                 if not handled:
                     audio_player.play_sound("Dont-understand")
                     video_player.play_animation("Confused")
@@ -86,6 +97,6 @@ while True and command not in ["good bye", 'bye', 'quit', 'exit', 'goodbye', 'ex
                 print('no command heard')
 
 # sleep sound
-audio_player.play_sound("Yawn")
-video_player.play_animation("Sleep")
+audio_player.play_sound("Bye")
+video_player.play_animation("Wave")
 robot.close_microphone()

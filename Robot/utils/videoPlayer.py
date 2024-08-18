@@ -97,7 +97,7 @@ class Animate():
 
     def display_text(self, text, font_path=None, font_size=20):
         if self.animation_thread and self.animation_thread.is_alive():
-            if (not self.alarm_state and self.previous_folder != "Alarm") or animation_folder == "Alarm":
+            if (not self.alarm_state and self.previous_folder != "Alarm") or self.current_folder == "Alarm":
                 self.animation_stop_event.set()  # Set stop event to terminate current animation thread
                 self.animation_thread.join()
 
