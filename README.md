@@ -10,7 +10,9 @@ Welcome to the Desk Companion Robot project! This intelligent, pet-like robot as
 
 ## Project Overview
 
-https://cheryl-toh.github.io/Pyxi/
+Deployment: https://cheryl-toh.github.io/Pyxi/
+
+Phase 1 Run Through: https://www.youtube.com/watch?v=vKJkiZ0tka0
 
 ## Key Features
 
